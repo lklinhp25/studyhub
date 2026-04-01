@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>StudyHub - Học 3 Chứng Chỉ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            background: linear-gradient(145deg, #f8fafc 0%, #eef2ff 100%);
+            color: #1e293b;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        /* Header */
+        .gradient-header {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec489a);
+            border-radius: 28px;
+            padding: 24px 20px;
+            margin-bottom: 24px;
+            color: white;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .greeting {
+            font-size: 26px;
+            font-weight: 700;
+        }
+        .greeting span {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 14px;
+            margin-left: 8px;
+        }
+        .date-badge {
+            font-size: 14px;
+            margin-top: 8px;
+            opacity: 0.9;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 18px 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: 0.2s;
+        }
+        .stat-card i {
+            font-size: 28px;
+            background: linear-gradient(135deg, #6366f1, #a5b4fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+        }
+        .stat-label {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 6px;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 16px 28px;
+            border-top: 1px solid #e2e8f0;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            font-size: 12px;
+            color: #94a3b8;
+            transition: 0.2s;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 40px;
+        }
+        .nav-item i {
+            font-size: 22px;
+        }
+        .nav-item.active {
+            color: #6366f1;
+            background: rgba(99,102,241,0.1);
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+        .section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        /* Vocabulary Card */
+        .vocab-card {
+            background: white;
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-left: 6px solid #6366f1;
+        }
+        .vocab-card.ielts { border-left-color: #ff6b6b; }
+        .vocab-card.hsk { border-left-color: #4ecdc4; }
+        .vocab-card.tocfl { border-left-color: #ffd166; }
+        .word-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .word {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .pronounce-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #6366f1;
+            padding: 8px;
+            border-radius: 40px;
+        }
+        .meaning {
+            margin: 12px 0 8px;
+            font-size: 15px;
+        }
+        .example {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 16px;
+            font-size: 13px;
+            color: #475569;
+            margin-top: 12px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #e2e8f0;
+            color: #475569;
+        }
+        .badge-ielts { background: #ff6b6b; color: white; }
+        .badge-hsk { background: #4ecdc4; color: white; }
+        .badge-tocfl { background: #ffd166; color: #1e293b; }
+
+        /* Quiz */
+        .quiz-card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+        .quiz-question {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+        .quiz-option {
+            background: #f8fafc;
+            border-radius: 60px;
+            padding: 14px 18px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .quiz-option.selected {
+            background: #e0e7ff;
+            border-color: #6366f1;
+        }
+        .quiz-option.correct { background: #d1fae5; border-color: #10b981; }
+        .quiz-option.incorrect { background: #fee2e2; border-color: #ef4444; }
+
+        /* Audio player */
+        .audio-player {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            text-align: center;
+        }
+        .play-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #6366f1;
+            border: none;
+            font-size: 28px;
+            color: white;
+            margin: 16px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .progress-bar {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: #6366f1;
+        }
+
+        /* Writing */
+        .writing-prompt {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        textarea {
+            width: 100%;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 16px;
+            font-family: inherit;
+            font-size: 16px;
+            min-height: 200px;
+        }
+
+        /* Settings */
+        .setting-item {
+            background: white;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .toggle {
+            width: 50px;
+            height: 26px;
+            background: #cbd5e1;
+            border-radius: 40px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .toggle.active {
+            background: #6366f1;
+        }
+        .toggle .knob {
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            transition: 0.2s;
+        }
+        .toggle.active .knob {
+            left: 25px;
+        }
+        button {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="gradient-header">
+        <div class="greeting">Xin chào, <span>🔥 7 ngày</span></div>
+        <div class="date-badge"><i class="far fa-calendar-alt"></i> Hôm nay, 2 Tháng 4</div>
+    </div>
+
+    <!-- Dashboard Stats -->
+    <div class="stats-grid" id="statsGrid">
+        <div class="stat-card"><i class="fas fa-book-open"></i><div class="stat-value" id="totalWords">7</div><div class="stat-label">Từ đã học</div></div>
+        <div class="stat-card"><i class="fas fa-trophy"></i><div class="stat-value" id="quizScore">78</div><div class="stat-label">Điểm TB</div></div>
+        <div class="stat-card"><i class="fas fa-fire"></i><div class="stat-value" id="streak">7</div><div class="stat-label">Streak</div></div>
+        <div class="stat-card"><i class="fas fa-hourglass-half"></i><div class="stat-value" id="studyTime">8h</div><div class="stat-label">Tuần này</div></div>
+    </div>
+
+    <!-- Sections -->
+    <div id="vocabSection" class="section active">
+        <div style="margin-bottom: 16px;"><h3 style="font-weight: 700;">📖 Từ vựng</h3></div>
+        <div id="vocabList"></div>
+    </div>
+
+    <div id="quizSection" class="section">
+        <div class="quiz-card">
+            <div class="quiz-question" id="quizQuestion">Loading...</div>
+            <div id="quizOptions"></div>
+            <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                <button id="prevQuiz" class="badge" style="background:#e2e8f0;">← Trước</button>
+                <button id="nextQuiz" class="badge" style="background:#6366f1; color:white;">Tiếp →</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="listenSection" class="section">
+        <div class="audio-player">
+            <i class="fas fa-headphones" style="font-size: 32px; color:#6366f1;"></i>
+            <h4>Bài nghe: Biến đổi khí hậu</h4>
+            <button class="play-btn" id="playAudio"><i class="fas fa-play"></i></button>
+            <div class="progress-bar"><div class="progress-fill" id="audioProgress"></div></div>
+            <div style="background:#f8fafc; padding:12px; border-radius:16px; margin-top:20px; font-size:14px; text-align:left;">
+                🌍 Biến đổi khí hậu đang ảnh hưởng đến mọi quốc gia. Hợp tác toàn cầu là chìa khóa.
+            </div>
+        </div>
+    </div>
+
+    <div id="writeSection" class="section">
+        <div class="writing-prompt">
+            <h4>✍️ Đề bài IELTS</h4>
+            <p>Technology causes more problems than it solves. Discuss both views.</p>
+        </div>
+        <textarea id="essayInput" placeholder="Viết bài luận của bạn..."></textarea>
+        <div style="display: flex; justify-content: space-between; margin-top: 12px;">
+            <span id="wordCount">0 từ</span>
+            <button id="submitEssay" class="badge" style="background:#10b981; color:white;">Nộp bài</button>
+        </div>
+    </div>
+
+    <div id="statsSection" class="section">
+        <div style="background:white; border-radius:20px; padding:20px;">
+            <h4>📊 Thống kê</h4>
+            <div style="margin:16px 0;"><div>Tiến độ từ vựng</div><div style="background:#e2e8f0; border-radius:20px; height:10px;"><div style="width:65%; background:#6366f1; height:10px; border-radius:20px;"></div></div></div>
+            <div><div>Điểm Quiz</div><div style="background:#e2e8f0; border-radius:20px; height:10px;"><div style="width:78%; background:#f59e0b; height:10px; border-radius:20px;"></div></div></div>
+        </div>
+    </div>
+
+    <div id="settingsSection" class="section">
+        <div class="setting-item">
+            <span>🔔 Nhắc học</span>
+            <div class="toggle" id="notifToggle"><div class="knob"></div></div>
+        </div>
+        <div class="setting-item">
+            <span>🌙 Chế độ tối</span>
+            <div class="toggle" id="darkToggle"><div class="knob"></div></div>
+        </div>
+        <button id="resetData" style="width:100%; margin-top:20px; padding:14px; background:#fee2e2; border:none; border-radius:40px; color:#ef4444; font-weight:600;">🔄 Đặt lại dữ liệu</button>
+    </div>
+</div>
+
+<div class="bottom-nav">
+    <button class="nav-item active" data-nav="vocab"><i class="fas fa-book"></i><span>Học</span></button>
+    <button class="nav-item" data-nav="quiz"><i class="fas fa-question-circle"></i><span>Quiz</span></button>
+    <button class="nav-item" data-nav="listen"><i class="fas fa-headphones"></i><span>Nghe</span></button>
+    <button class="nav-item" data-nav="write"><i class="fas fa-pen-fancy"></i><span>Viết</span></button>
+    <button class="nav-item" data-nav="stats"><i class="fas fa-chart-line"></i><span>Thống kê</span></button>
+    <button class="nav-item" data-nav="settings"><i class="fas fa-cog"></i><span>Cài đặt</span></button>
+</div>
+
+<script>
+    // Data
+    const vocabData = [
+        { word: "Sustainable", meaning: "Bền vững", example: "We need sustainable energy.", type: "ielts" },
+        { word: "可持续发展", pinyin: "kě chíxù fāzhǎn", meaning: "Phát triển bền vững", example: "可持续发展很重要。", type: "hsk" },
+        { word: "永续发展", pinyin: "yǒngxù fāzhǎn", meaning: "Phát triển bền vững", example: "永续发展是目标。", type: "tocfl" },
+        { word: "Artificial Intelligence", meaning: "Trí tuệ nhân tạo", example: "AI is everywhere.", type: "ielts" },
+        { word: "人工智能", pinyin: "réngōng zhìnéng", meaning: "AI", example: "人工智能改变世界。", type: "hsk" }
+    ];
+
+    const quizBank = [
+        { q: "Sustainable có nghĩa là gì?", opts: ["Tạm thời", "Bền vững", "Nhanh chóng", "Ô nhiễm"], correct: 1 },
+        { q: "“可持续发展” là gì?", opts: ["Phát triển nhanh", "Phát triển bền vững", "Công nghiệp hóa", "Ô nhiễm"], correct: 1 }
+    ];
+
+    let currentNav = "vocab";
+    let quizIndex = 0;
+    let userAnswers = [];
+    let audioPlaying = false;
+    let audioInterval = null;
+
+    // Render vocab
+    function renderVocab() {
+        const container = document.getElementById('vocabList');
+        container.innerHTML = vocabData.map(v => `
+            <div class="vocab-card ${v.type}">
+                <div class="word-row">
+                    <div class="word">${v.word} ${v.pinyin ? `<span style="font-size:14px; color:#6b7280;">${v.pinyin}</span>` : ''}</div>
+                    <button class="pronounce-btn" onclick="speakIt('${v.word.replace(/'/g, "\\'")}', '${v.type}')"><i class="fas fa-volume-up"></i></button>
+                </div>
+                <div class="meaning">${v.meaning}</div>
+                <div class="example">📘 ${v.example}</div>
+                <div><span class="badge badge-${v.type}">${v.type.toUpperCase()}</span></div>
+            </div>
+        `).join('');
+    }
+
+    // Speech
+    window.speakIt = function(word, type) {
+        let lang = type === 'ielts' ? 'en-US' : (type === 'hsk' ? 'zh-CN' : 'zh-TW');
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.lang = lang;
+        utterance.rate = 0.8;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(utterance);
+    };
+
+    // Quiz
+    function loadQuiz() {
+        const q = quizBank[quizIndex];
+        document.getElementById('quizQuestion').innerHTML = q.q;
+        const optsDiv = document.getElementById('quizOptions');
+        optsDiv.innerHTML = '';
+        q.opts.forEach((opt, idx) => {
+            const btn = document.createElement('div');
+            btn.className = 'quiz-option';
+            btn.innerText = opt;
+            if(userAnswers[quizIndex] === idx) btn.classList.add('selected');
+            btn.onclick = () => {
+                userAnswers[quizIndex] = idx;
+                loadQuiz();
+            };
+            optsDiv.appendChild(btn);
+        });
+    }
+    function nextQuiz() {
+        if(quizIndex < quizBank.length-1) { quizIndex++; loadQuiz(); }
+        else finishQuiz();
+    }
+    function prevQuiz() {
+        if(quizIndex > 0) { quizIndex--; loadQuiz(); }
+    }
+    function finishQuiz() {
+        let correct = 0;
+        quizBank.forEach((q,i) => { if(userAnswers[i] === q.correct) correct++; });
+        const score = Math.round((correct/quizBank.length)*100);
+        alert(`Kết quả: ${correct}/${quizBank.length} (${score} điểm)`);
+        quizIndex = 0;
+        userAnswers = [];
+        loadQuiz();
+    }
+
+    // Audio simulation
+    function startAudio() {
+        if(audioPlaying) return;
+        audioPlaying = true;
+        let progress = 0;
+        audioInterval = setInterval(() => {
+            progress += 2;
+            document.getElementById('audioProgress').style.width = progress + '%';
+            if(progress >= 100) {
+                clearInterval(audioInterval);
+                audioPlaying = false;
+                document.querySelector('#playAudio i').className = 'fas fa-play';
+            }
+        }, 50);
+        document.querySelector('#playAudio i').className = 'fas fa-pause';
+    }
+    function stopAudio() {
+        if(audioInterval) clearInterval(audioInterval);
+        audioPlaying = false;
+        document.getElementById('audioProgress').style.width = '0%';
+        document.querySelector('#playAudio i').className = 'fas fa-play';
+    }
+
+    // Writing
+    function updateWordCount() {
+        const text = document.getElementById('essayInput').value;
+        const words = text.trim().split(/\s+/).filter(w=>w.length).length;
+        document.getElementById('wordCount').innerText = words + ' từ';
+    }
+    function submitEssay() {
+        const text = document.getElementById('essayInput').value;
+        if(text.length < 20) alert('Viết dài hơn để nhận phản hồi.');
+        else alert('✅ Bài viết đã được lưu! Cảm ơn bạn.');
+    }
+
+    // Navigation
+    function switchSection(sectionId) {
+        document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+        document.getElementById(sectionId + 'Section').classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`[data-nav="${sectionId}"]`).classList.add('active');
+        currentNav = sectionId;
+        if(sectionId === 'vocab') renderVocab();
+        if(sectionId === 'quiz') loadQuiz();
+    }
+
+    // Settings toggles
+    function initToggles() {
+        const notif = document.getElementById('notifToggle');
+        notif.addEventListener('click', () => notif.classList.toggle('active'));
+        const dark = document.getElementById('darkToggle');
+        dark.addEventListener('click', () => {
+            dark.classList.toggle('active');
+            if(dark.classList.contains('active')) {
+                document.body.style.backgroundColor = '#121212';
+                document.body.style.color = '#f0f0f0';
+                document.querySelectorAll('.stat-card, .vocab-card, .quiz-card, .audio-player, .writing-prompt, .setting-item').forEach(el => el.style.backgroundColor = '#1e1e2f');
+            } else {
+                document.body.style.backgroundColor = '';
+                document.body.style.color = '';
+                document.querySelectorAll('.stat-card, .vocab-card, .quiz-card, .audio-player, .writing-prompt, .setting-item').forEach(el => el.style.backgroundColor = 'white');
+            }
+        });
+        document.getElementById('resetData').addEventListener('click', () => {
+            if(confirm('Xóa toàn bộ tiến độ?')) {
+                localStorage.clear();
+                location.reload();
+            }
+        });
+    }
+
+    // Event listeners
+    document.getElementById('prevQuiz').addEventListener('click', prevQuiz);
+    document.getElementById('nextQuiz').addEventListener('click', nextQuiz);
+    document.getElementById('playAudio').addEventListener('click', () => {
+        if(audioPlaying) stopAudio(); else startAudio();
+    });
+    document.getElementById('essayInput').addEventListener('input', updateWordCount);
+    document.getElementById('submitEssay').addEventListener('click', submitEssay);
+    document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.addEventListener('click', () => switchSection(btn.dataset.nav));
+    });
+
+    // Initialize
+    renderVocab();
+    loadQuiz();
+    updateWordCount();
+    initToggles();
+
+    // Force safe area for iPhone
+    document.body.style.paddingBottom = '80px';
+</script>
+</body>
+</html>
